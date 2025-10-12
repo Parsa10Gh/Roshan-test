@@ -6,7 +6,7 @@ const Navbar = () => {
   const location = useLocation();
   console.log(location.pathname)
   return (
-    <div className="w-40 h-full bg-gradient-to-b text-white from-[#00B5A0] to-[#00C69B] rounded-l-xl">
+    <div className="w-40 bg-gradient-to-b text-white from-[#00B5A0] to-[#00C69B] rounded-l-xl">
       <div className="flex h-fit py-12 justify-center">
         <h1 className="text-xl font-bold px-3 mt-1">آوا</h1>
         <img src="Icon.png" className="w-5" alt="" />

@@ -52,7 +52,7 @@ const Home = () => {
           یاد گرفته است و می‌تواند متن صحبت‌ها را بنویسد.
         </p>
       </div>
-      <div className="w-1/2 mx-auto my-10">
+      <div className="md:w-3/4 lg:w-1/2 mx-auto my-10">
         <ul className="flex justify-end text-[#969696] px-1">
           <li>
             <Link
