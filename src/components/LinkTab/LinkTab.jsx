@@ -6,7 +6,6 @@ import {
   LuRefreshCw,
 } from "react-icons/lu";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { CiTextAlignRight } from "react-icons/ci";
 
 const LinkTab = () => {
@@ -93,7 +92,7 @@ const LinkTab = () => {
                 <LuDownload className="text-base text-[#626262] hover:cursor-pointer hover:bg-slate-200" />
               </p>
             </div>
-            
+
             <ul className="flex items-center">
               <li className="px-2 h-full">
                 <button
