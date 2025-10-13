@@ -1,10 +1,4 @@
-import {
-  LuChevronDown,
-  LuChevronUp,
-  LuMic,
-  LuCloudUpload,
-  LuLink,
-} from "react-icons/lu";
+import { LuMic } from "react-icons/lu";
 const Speech = () => {
   return (
     <div className="w-full h-[470px] justify-items-center content-center border-2 rounded-lg -mt-0.5 border-[#00BA9F]">

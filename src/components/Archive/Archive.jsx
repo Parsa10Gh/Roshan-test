@@ -20,7 +20,6 @@ const Archive = () => {
   const [savedIndex, setSavedIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const [isText, setIsText] = useState(true);
-  const [timedText, setTimedText] = useState(null);
 
   useEffect(() => {
     fetch("https://harf.roshan-ai.ir/api/requests/", {
