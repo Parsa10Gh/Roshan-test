@@ -40,7 +40,9 @@ const LinkTab = () => {
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        setResult('error');
+        setResult(
+          "فایل مورد نظر یافت نشد، با زدن کلید شروع دوباره، مجدداً امتحان کنید"
+        );
       });
     console.log(result);
     console.log(timedText);
@@ -48,7 +50,7 @@ const LinkTab = () => {
 
   return (
     <div
-      className={`w-full h-[470px] justify-items-center content-center border-2 rounded-lg overflow-scroll -mt-0.5 border-[#FF1654]`}
+      className={`w-full h-[470px] justify-items-center content-center border-2 rounded-lg overflow-auto  -mt-0.5 border-[#FF1654]`}
     >
       {result == null ? (
         <div>
@@ -72,7 +74,7 @@ const LinkTab = () => {
           </p>
         </div>
       ) : (
-        <div className="text-sm px-4">
+        <div className="w-full h-full text-sm px-4">
           <div className="flex justify-between border-b-[1px] border-[#c5c0c0]">
             <div className="flex items-center py-2">
               <button
@@ -85,7 +87,12 @@ const LinkTab = () => {
                 <span className="px-2 mb-1">شروع دوباره</span>
                 <LuRefreshCw className="text-base" />
               </button>
-              <p className="p-2 rounded-full ml-4 hover:cursor-pointer transition-all duration-300 hover:bg-slate-200">
+              <p
+                onClick={() => {
+                  navigator.clipboard.writeText(result);
+                }}
+                className="p-2 rounded-full ml-4 hover:cursor-pointer transition-all duration-300 hover:bg-slate-200"
+              >
                 <LuCopy className="text-base text-[#626262]" />
               </p>
               <p className="p-2 rounded-full  ml-4 hover:cursor-pointer transition-all duration-300 hover:bg-slate-200">
@@ -128,6 +135,11 @@ const LinkTab = () => {
             <p dir="rtl" className="py-4 text-[16px]">
               {result}
             </p>
+          ) : timedText == null ? (
+            <div dir="rtl" className="text-base py-4">
+              فایل مورد نظر یافت نشد، با زدن کلید شروع دوباره، مجدداً امتحان
+              کنید
+            </div>
           ) : (
             <ul>
               {timedText.map((t, index) => (
@@ -138,8 +150,12 @@ const LinkTab = () => {
                     index % 2 ? "bg-[#F2F2F2]" : "bg-white"
                   }`}
                 >
-                  <span className="px-2 ">{t.start.split(":").slice(1, 3).join(":").split(".")[0]}</span>
-                  <span className="px-2 ">{t.end.split(":").slice(1, 3).join(":").split(".")[0]}</span>
+                  <span className="px-2 ">
+                    {t.start.split(":").slice(1, 3).join(":").split(".")[0]}
+                  </span>
+                  <span className="px-2 ">
+                    {t.end.split(":").slice(1, 3).join(":").split(".")[0]}
+                  </span>
                   <p className="px-2 ">{t.text}</p>
                 </li>
               ))}
