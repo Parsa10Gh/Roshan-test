@@ -6,16 +6,16 @@ const Home = () => {
   const location = useLocation();
 
   return (
-    <div className="w-full py-7 px-12">
+    <div className="w-full py-7 px-2 md:px-12">
       <Header />
       <div className="w-fit mx-auto text-center">
-        <h2 className="text-3xl py-6 text-[#00BA9F]">تبدیل گفتار به متن</h2>
-        <p dir="rtl" className="text-[#969696] w-[434px] mx-auto">
+        <h2 className="text-2xl md:text-3xl py-6 text-[#00BA9F]">تبدیل گفتار به متن</h2>
+        <p dir="rtl" className="text-sm lg:text-md text-[#969696] md:w-[434px] mx-auto">
           آوا با استفاده از هزاران ساعت گفتار با صدای افراد مختلف، زبان فارسی را
           یاد گرفته است و می‌تواند متن صحبت‌ها را بنویسد.
         </p>
       </div>
-      <div className="md:w-3/4 lg:w-1/2 mx-auto my-10">
+      <div className="w-full md:w-3/4 lg:w-1/2 mx-auto my-10">
         <ul className="flex justify-end text-[#969696] px-1">
           <li>
             <Link

@@ -13,17 +13,17 @@ const Navbar = () => {
       </div>
       <ul className="flex-col justify-items-center h-fit py-28">
         <li
-          className={`p-2 my-6 rounded-xl ${
+          className={`px-1 lg:px-2 py-2 my-6 rounded-xl ${
             location.pathname.startsWith("/speech") ? "bg-[#02816E]" : ""
           }`}
         >
           <Link to="/" className="flex">
-            <span className="px-2">تبدیل گفتار</span>
+            <span className="w-full px-2">تبدیل گفتار</span>
             <LuMic className="text-2xl" />
           </Link>
         </li>
         <li
-          className={`p-2 my-6 rounded-xl ${
+          className={`px-1 lg:px-3 py-2 my-6 rounded-xl ${
             location.pathname === "/archive" ? "bg-[#02816E]" : ""
           }`}
         >
