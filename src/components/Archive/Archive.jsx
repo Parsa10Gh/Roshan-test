@@ -21,7 +21,6 @@ import {
   setItemsPerPage,
   changeIsText,
 } from "../../slices/archiveSlices";
-import { Link } from "react-router-dom";
 
 const Archive = () => {
   const dispatch = useDispatch();

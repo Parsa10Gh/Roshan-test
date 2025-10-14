@@ -6,6 +6,7 @@ const initialState = {
   result: null,
   timedText: null,
   isText: true,
+  loading: false,
 };
 
 const homeSlice = createSlice({
@@ -17,8 +18,9 @@ const homeSlice = createSlice({
     setResult: (state,action) => {state.result = action.payload},
     setTimedText: (state , action) => { state.timedText = action.payload},
     changeIsText: (state , action) => { state.isText = action.payload },
+    changeLoading: (state , action) => {state.loading = action.payload},
   },
 });
 
-export const { changeExit , setUrl , setResult , setTimedText , changeIsText } = homeSlice.actions;
+export const { changeExit , setUrl , setResult , setTimedText , changeIsText , changeLoading } = homeSlice.actions;
 export default homeSlice.reducer;

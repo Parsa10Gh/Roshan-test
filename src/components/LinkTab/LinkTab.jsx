@@ -7,7 +7,13 @@ import {
 } from "react-icons/lu";
 import { CiTextAlignRight } from "react-icons/ci";
 import { useSelector, useDispatch } from "react-redux";
-import { setUrl , setResult , setTimedText , changeIsText } from "../../slices/homeSlices";
+import {
+  setUrl,
+  setResult,
+  setTimedText,
+  changeIsText,
+  changeLoading,
+} from "../../slices/homeSlices";
 
 const LinkTab = () => {
   const dispatch = useDispatch();
@@ -15,8 +21,11 @@ const LinkTab = () => {
   const result = useSelector((state) => state.home.result);
   const timedText = useSelector((state) => state.home.timedText);
   const isText = useSelector((state) => state.home.isText);
+  const loading = useSelector((state) => state.home.loading);
 
   const handleSubmit = () => {
+    dispatch(changeLoading(true));
+
     fetch("https://harf.roshan-ai.ir/api/transcribe_files/", {
       method: "POST",
       headers: {
@@ -42,39 +51,49 @@ const LinkTab = () => {
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        dispatch(setResult(
-          "فایل مورد نظر یافت نشد، با زدن کلید شروع دوباره، مجدداً امتحان کنید"
-        ));
-      });
+        dispatch(
+          setResult(
+            "فایل مورد نظر یافت نشد، با زدن کلید شروع دوباره، مجدداً امتحان کنید"
+          )
+        );
+      })
+      .finally(() => dispatch(changeLoading(false)));
+
     // console.log(result);
     // console.log(timedText);
   };
 
   return (
     <div
-      className={`w-full h-[470px] justify-items-center content-center border-2 rounded-lg overflow-auto  -mt-0.5 border-[#FF1654]`}
+      className={`w-full h-[470px] justify-items-center content-center border-2 rounded-lg pb-7  -mt-0.5 border-[#FF1654]`}
     >
       {result == null ? (
-        <div>
-          <div className="flex rounded-full border-[#FF1654] border-[1px] py-1.5 px-4">
-            <button
-              onClick={handleSubmit}
-              className="w-fit bg-[#FF1654] p-1.5 rounded-full text-white hover:bg-[#9a0e33] transition-colors duration-500"
-            >
-              <LuLink className="text-xl" />
-            </button>
-            <input
-              value={url}
-              onChange={(e) => dispatch(setUrl(e.target.value))}
-              type="text"
-              className="w-full px-2 outline-none"
-            />
+        loading ? (
+          <div dir="rtl" className="p-6 bg-[#FF1654] text-white rounded-full">
+            در حال پردازش لطفاً کمی صبر کنید ...
           </div>
-          <p dir="rtl" className="text-center py-2 text-[#626262]">
-            نشانی اینترنتی فایل حاوی گفتار (صوتی/تصویری) را وارد <br /> و دکمه
-            را فشار دهید
-          </p>
-        </div>
+        ) : (
+          <div>
+            <div className="flex rounded-full border-[#FF1654] border-[1px] py-1.5 px-4">
+              <button
+                onClick={handleSubmit}
+                className="w-fit bg-[#FF1654] p-1.5 rounded-full text-white hover:bg-[#9a0e33] transition-colors duration-500"
+              >
+                <LuLink className="text-xl" />
+              </button>
+              <input
+                value={url}
+                onChange={(e) => dispatch(setUrl(e.target.value))}
+                type="text"
+                className="w-full px-2 outline-none"
+              />
+            </div>
+            <p dir="rtl" className="text-center py-2 text-[#626262]">
+              نشانی اینترنتی فایل حاوی گفتار (صوتی/تصویری) را وارد <br /> و دکمه
+              را فشار دهید
+            </p>
+          </div>
+        )
       ) : (
         <div className="w-full h-full text-sm px-4">
           <div className="flex justify-between border-b-[1px] border-[#c5c0c0]">
@@ -134,34 +153,55 @@ const LinkTab = () => {
             </ul>
           </div>
           {isText ? (
-            <p dir="rtl" className="py-4 text-[16px] text-base/8">
-              {result}
-            </p>
+            <>
+              <div className="h-[350px] overflow-auto px-2 py-2">
+                <p
+                  dir="rtl"
+                  className=" text-[16px] py-2 px-2 text-justify text-base/8"
+                >
+                  {result}
+                </p>
+              </div>
+              <audio
+                className="justify-self-center my-1 py-1 h-12 w-8/12"
+                src={url}
+                controls
+              ></audio>
+            </>
           ) : timedText == null ? (
             <div dir="rtl" className="text-base py-4">
               فایل مورد نظر یافت نشد، با زدن کلید شروع دوباره، مجدداً امتحان
               کنید
             </div>
           ) : (
-            <ul>
-              {timedText.map((t, index) => (
-                <li
-                  key={index}
-                  dir="rtl"
-                  className={`flex p-4 rounded-full ${
-                    index % 2 ? "bg-[#F2F2F2]" : "bg-white"
-                  }`}
-                >
-                  <span className="px-2 ">
-                    {t.start.split(":").slice(1, 3).join(":").split(".")[0]}
-                  </span>
-                  <span className="px-2 ">
-                    {t.end.split(":").slice(1, 3).join(":").split(".")[0]}
-                  </span>
-                  <p className="px-2 ">{t.text}</p>
-                </li>
-              ))}
-            </ul>
+            <>
+              <div className="h-[350px] overflow-auto px-2 py-2">
+                <ul>
+                  {timedText.map((t, index) => (
+                    <li
+                      key={index}
+                      dir="rtl"
+                      className={`flex p-4 rounded-full ${
+                        index % 2 ? "bg-[#F2F2F2]" : "bg-white"
+                      }`}
+                    >
+                      <span className="px-2 ">
+                        {t.start.split(":").slice(1, 3).join(":").split(".")[0]}
+                      </span>
+                      <span className="px-2 ">
+                        {t.end.split(":").slice(1, 3).join(":").split(".")[0]}
+                      </span>
+                      <p className="px-2 ">{t.text}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <audio
+                className="justify-self-center mt-2 py-1 h-12 w-6/12"
+                src={url}
+                controls
+              ></audio>
+            </>
           )}
         </div>
       )}
