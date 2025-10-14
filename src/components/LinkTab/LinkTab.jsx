@@ -5,14 +5,16 @@ import {
   LuLink,
   LuRefreshCw,
 } from "react-icons/lu";
-import { useState } from "react";
 import { CiTextAlignRight } from "react-icons/ci";
+import { useSelector, useDispatch } from "react-redux";
+import { setUrl , setResult , setTimedText , changeIsText } from "../../slices/homeSlices";
 
 const LinkTab = () => {
-  const [url, setUrl] = useState("");
-  const [result, setResult] = useState(null);
-  const [timedText, setTimedText] = useState(null);
-  const [isText, setIsText] = useState(true);
+  const dispatch = useDispatch();
+  const url = useSelector((state) => state.home.url);
+  const result = useSelector((state) => state.home.result);
+  const timedText = useSelector((state) => state.home.timedText);
+  const isText = useSelector((state) => state.home.isText);
 
   const handleSubmit = () => {
     fetch("https://harf.roshan-ai.ir/api/transcribe_files/", {
@@ -32,20 +34,20 @@ const LinkTab = () => {
       .then((data) => {
         if (Array.isArray(data) && data[0]?.segments) {
           const fullText = data[0].segments.map((seg) => seg.text).join(" ");
-          setResult(fullText);
-          setTimedText(data[0].segments);
+          dispatch(setResult(fullText));
+          dispatch(setTimedText(data[0].segments));
         } else {
           console.log("Unexpected response:", data);
         }
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        setResult(
+        dispatch(setResult(
           "فایل مورد نظر یافت نشد، با زدن کلید شروع دوباره، مجدداً امتحان کنید"
-        );
+        ));
       });
-    console.log(result);
-    console.log(timedText);
+    // console.log(result);
+    // console.log(timedText);
   };
 
   return (
@@ -63,7 +65,7 @@ const LinkTab = () => {
             </button>
             <input
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={(e) => dispatch(setUrl(e.target.value))}
               type="text"
               className="w-full px-2 outline-none"
             />
@@ -80,7 +82,7 @@ const LinkTab = () => {
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  setResult(null);
+                  dispatch(setResult(null));
                 }}
                 className="flex items-center bg-[#118AD3] px-3 py-1.5 rounded-full text-white"
               >
@@ -105,7 +107,7 @@ const LinkTab = () => {
                 <button
                   onClick={(e) => {
                     e.preventDefault();
-                    setIsText(false);
+                    dispatch(changeIsText(false));
                   }}
                   className={`flex items-center px-1 ${
                     !isText && "border-b-black border-b-2"
@@ -119,7 +121,7 @@ const LinkTab = () => {
                 <button
                   onClick={(e) => {
                     e.preventDefault();
-                    setIsText(true);
+                    dispatch(changeIsText(true));
                   }}
                   className={`flex items-center px-1 ${
                     isText && "border-b-black border-b-2"
@@ -132,7 +134,7 @@ const LinkTab = () => {
             </ul>
           </div>
           {isText ? (
-            <p dir="rtl" className="py-4 text-[16px]">
+            <p dir="rtl" className="py-4 text-[16px] text-base/8">
               {result}
             </p>
           ) : timedText == null ? (

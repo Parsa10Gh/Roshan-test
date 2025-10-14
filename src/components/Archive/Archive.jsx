@@ -7,19 +7,30 @@ import {
   LuMic,
   LuTrash2,
 } from "react-icons/lu";
-import Header from "../Header/Header";
-import { FaRegFileWord } from "react-icons/fa";
-import React, { useEffect, useState } from "react";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { CiTextAlignRight } from "react-icons/ci";
+import { FaRegFileWord } from "react-icons/fa";
+import Header from "../Header/Header";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setFilesList,
+  changeCurrentPage,
+  setOpenDetailId,
+  setSavedIndex,
+  setItemsPerPage,
+  changeIsText,
+} from "../../slices/archiveSlices";
+import { Link } from "react-router-dom";
 
 const Archive = () => {
-  const [filesList, setFilesList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [openDetailId, setOpenDetailId] = useState(null);
-  const [savedIndex, setSavedIndex] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(8);
-  const [isText, setIsText] = useState(true);
+  const dispatch = useDispatch();
+  const filesList = useSelector((state) => state.archive.filesList);
+  const currentPage = useSelector((state) => state.archive.currentPage);
+  const openDetailId = useSelector((state) => state.archive.openDetailId);
+  const savedIndex = useSelector((state) => state.archive.savedIndex);
+  const itemsPerPage = useSelector((state) => state.archive.itemsPerPage);
+  const isText = useSelector((state) => state.archive.isText);
 
   useEffect(() => {
     fetch("https://harf.roshan-ai.ir/api/requests/", {
@@ -28,9 +39,19 @@ const Archive = () => {
       },
     })
       .then((res) => res.json())
-      .then((data) => setFilesList(data))
-      .catch((err) => console.log(err));
-  }, []);
+      .then((data) => {
+        const filesArray = Array.isArray(data)
+          ? data
+          : Array.isArray(data.results)
+          ? data.results
+          : [];
+
+        dispatch(setFilesList(filesArray));
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+      });
+  }, [dispatch]);
 
   const totalPages = Math.ceil(filesList.length / 8);
 
@@ -45,7 +66,8 @@ const Archive = () => {
     })
       .then((res) => {
         if (res.ok) {
-          setFilesList((prev) => prev.filter((file) => file.id !== id));
+          const updated = filesList.filter((file) => file.id !== id);
+          dispatch(setFilesList(updated));
         } else {
           return res
             .text()
@@ -54,22 +76,21 @@ const Archive = () => {
       })
       .catch((err) => console.log("Network error:", err));
   };
-
   const handleRowClick = (index, fileId) => {
     if (openDetailId === fileId) {
-      setOpenDetailId(null);
-      setItemsPerPage(8);
+      dispatch(setOpenDetailId(null));
+      dispatch(setItemsPerPage(8));
       const restoredPage = Math.ceil((savedIndex + 1) / 8);
-      setCurrentPage(restoredPage);
+      dispatch(changeCurrentPage(restoredPage));
       return;
     }
 
-    setSavedIndex(index);
-    setOpenDetailId(fileId);
-    setItemsPerPage(4);
+    dispatch(setSavedIndex(index));
+    dispatch(setOpenDetailId(fileId));
+    dispatch(setItemsPerPage(4));
 
     const newPage = Math.ceil((index + 1) / 4);
-    setCurrentPage(newPage);
+    dispatch(changeCurrentPage(newPage));
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -77,13 +98,13 @@ const Archive = () => {
   const filesToRender = filesList.slice(startIndex, endIndex);
 
   const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-    setItemsPerPage(8);
-    setOpenDetailId(null);
+    dispatch(changeCurrentPage(newPage));
+    dispatch(setItemsPerPage(8));
+    dispatch(setOpenDetailId(null));
   };
 
   return (
-    <div className="w-full py-7 px-2 lg:px-6">
+    <div className="w-full py-7 px-2 lg:px-6 overflow-hidden">
       <Header />
       <div className="lg:px- xl:px-20">
         <h1 className="text-right text-2xl text-[#00BA9F] py-2">آرشیو من</h1>
@@ -107,8 +128,8 @@ const Archive = () => {
               const index = startIndex + indexInPage;
               return (
                 <React.Fragment key={file.id}>
-                  <tr>
-                    <td className="text-center text-xl text-[#8F8F8F] px-4 py-5 lg:py-5 flex justify-between">
+                  <tr className="hover:shadow-md rounded-full ">
+                    <td className="text-center text-xl text-[#8F8F8F] px-4 py-5 flex justify-between ">
                       <i
                         className="hover:bg-[#DC3545] hover:text-white hover:cursor-pointer transition-all duration-300 p-1 rounded-full"
                         onClick={() => handleDelete(file.id)}
@@ -118,7 +139,9 @@ const Archive = () => {
                       <i
                         className="hover:text-[#00BA9F] hover:cursor-pointer transition-all duration-300 p-1"
                         onClick={() => {
-                          navigator.clipboard.writeText(file.segments.map((seg) => seg.text).join(" "));
+                          navigator.clipboard.writeText(
+                            file.segments.map((seg) => seg.text).join(" ")
+                          );
                         }}
                       >
                         <LuCopy />
@@ -126,9 +149,15 @@ const Archive = () => {
                       <i className="hover:cursor-pointer transition-all duration-300 p-1">
                         <FaRegFileWord />
                       </i>
-                      <i className="hover:text-[#00BA9F] hover:cursor-pointer transition-all duration-300 p-1">
+                      <a
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={file.url}
+                        className="hover:text-[#00BA9F] hover:cursor-pointer transition-all duration-300 p-1"
+                      >
                         <LuDownload />
-                      </i>
+                      </a>
                     </td>
                     <td className="text-center py-2 w-2/12">
                       {file.duration.split(".")[0]}
@@ -146,7 +175,7 @@ const Archive = () => {
                       <p>{file.filename}</p>
                     </td>
                     <td
-                      className={`py-2 rounded-full flex justify-center px-2 ${
+                      className={`py-2 rounded-full flex justify-center px-2 mx-2 ${
                         file.filename.endsWith(".mp4")
                           ? "bg-[#118AD3]"
                           : file.filename.endsWith(".m4a") ||
@@ -168,13 +197,23 @@ const Archive = () => {
                   {openDetailId === file.id && (
                     <tr>
                       <td colSpan={6}>
-                        <div dir="rtl" className="p-4 h-80 rounded-xl border-2">
+                        <div
+                          dir="rtl"
+                          className={`p-4 h-80 rounded-xl border-2 ${
+                            file.filename.endsWith(".mp4")
+                              ? "border-[#118AD3]"
+                              : file.filename.endsWith(".m4a") ||
+                                file.filename.endsWith(".wav")
+                              ? "border-[#40C6B8]"
+                              : "border-[#FF1654]"
+                          }`}
+                        >
                           <ul className="flex items-center">
                             <li className="pl-2 h-full">
                               <button
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  setIsText(true);
+                                  dispatch(changeIsText(true));
                                 }}
                                 className={`flex items-center px-1 pb-3 ${
                                   isText && "border-b-black border-b-2"
@@ -188,7 +227,7 @@ const Archive = () => {
                               <button
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  setIsText(false);
+                                  dispatch(changeIsText(false));
                                 }}
                                 className={`flex items-center px-1 pb-3 ${
                                   !isText && "border-b-black border-b-2"
@@ -200,13 +239,13 @@ const Archive = () => {
                             </li>
                           </ul>
                           {isText ? (
-                            <div className="h-full pt-4 pb-8">
-                              <p className="h-5/6 overflow-auto text-base/8 text-justify px-4 overflow-x-hidden">
+                            <div className="h-4/6 pt-4 pb-4">
+                              <p className="h-full overflow-auto text-base/8 text-justify px-4 overflow-x-hidden">
                                 {file.segments.map((seg) => seg.text).join(" ")}
                               </p>
                             </div>
                           ) : (
-                            <ul className="h-5/6 overflow-auto">
+                            <ul className="h-4/6 overflow-auto">
                               {file.segments.map((t, index) => (
                                 <li
                                   key={index}
@@ -233,11 +272,16 @@ const Archive = () => {
                                         .split(".")[0]
                                     }
                                   </span>
-                                  <p className="px-2 ">{t.text}</p>
+                                  <p className="px-2">{t.text}</p>
                                 </li>
                               ))}
                             </ul>
                           )}
+                          <audio
+                            className="justify-self-center mt-8 h-8 w-6/12"
+                            src={file.url}
+                            controls
+                          ></audio>
                         </div>
                       </td>
                     </tr>
