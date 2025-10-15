@@ -109,7 +109,7 @@ const Archive = () => {
   return (
     <div className="w-full py-7 px-2 lg:px-6 overflow-hidden">
       <Header />
-      <div className="lg:px- xl:px-20">
+      <div className="lg:px- xl:px-20 pt-10">
         <h1 className="text-right text-2xl text-[#00BA9F] py-2">آرشیو من</h1>
         <table dir="" className="min-w-full h-fit mt-6 text-sm">
           <thead className="text-black">
@@ -208,6 +208,8 @@ const Archive = () => {
                           )}
                         </td>
                       </tr>
+
+                      {/* Details Row */}
                       {openDetailId === file.id && (
                         <tr>
                           <td colSpan={6}>
@@ -310,6 +312,7 @@ const Archive = () => {
           </tbody>
         </table>
 
+        {/* Pagination */}
         {totalPages > 1 && (
           <div
             dir="rtl"

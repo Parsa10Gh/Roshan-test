@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <div className="w-full py-7 px-2 md:px-12">
       <Header />
-      <div className="w-fit mx-auto text-center">
+      <div className="w-fit mx-auto text-center pt-10">
         <h2 className="text-2xl md:text-3xl py-6 text-[#00BA9F]">تبدیل گفتار به متن</h2>
         <p dir="rtl" className="text-sm lg:text-md text-[#969696] md:w-[434px] mx-auto">
           آوا با استفاده از هزاران ساعت گفتار با صدای افراد مختلف، زبان فارسی را
