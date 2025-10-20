@@ -9,7 +9,7 @@ import {
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { FaRegFileWord } from "react-icons/fa";
 import Header from "../Header/Header";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setFilesList,
@@ -17,6 +17,7 @@ import {
   setOpenDetailId,
   setSavedIndex,
   setItemsPerPage,
+  setLoading,
 } from "../../slices/archiveSlices";
 import DetailRow from "./DetailRow";
 
@@ -27,10 +28,10 @@ const Archive = () => {
   const openDetailId = useSelector((state) => state.archive.openDetailId);
   const savedIndex = useSelector((state) => state.archive.savedIndex);
   const itemsPerPage = useSelector((state) => state.archive.itemsPerPage);
-  const [loading, setLoading] = useState(true);
+  const loading = useSelector((state => state.archive.loading));
 
   useEffect(() => {
-    setLoading(true);
+    dispatch(setLoading(true));
 
     fetch("https://harf.roshan-ai.ir/api/requests/", {
       headers: {
@@ -50,7 +51,7 @@ const Archive = () => {
       .catch((err) => {
         console.error("Fetch error:", err);
       })
-      .finally(() => setLoading(false));
+      .finally(() => dispatch(setLoading(false)));
   }, [dispatch]);
 
   const totalPages = Math.ceil(filesList.length / 8);
@@ -76,6 +77,8 @@ const Archive = () => {
       })
       .catch((err) => console.log("Network error:", err));
   };
+
+
   const handleRowClick = (index, fileId) => {
     if (openDetailId === fileId) {
       dispatch(setOpenDetailId(null));

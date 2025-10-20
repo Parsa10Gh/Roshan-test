@@ -7,6 +7,7 @@
     savedIndex: 0,
     itemsPerPage: 8,
     isText: true,
+    loading: true,
     };
 
     const archiveSlice = createSlice({
@@ -19,8 +20,9 @@
         setSavedIndex: (state,action) => {state.savedIndex = action.payload},
         setItemsPerPage: (state , action) => { state.itemsPerPage = action.payload},
         changeIsText: (state , action) => { state.isText = action.payload },
+        setLoading: (state , action) => {state.loading = action.payload}
     },
     });
 
-    export const { setFilesList , changeCurrentPage , setOpenDetailId , setSavedIndex, setItemsPerPage , changeIsText } = archiveSlice.actions;
+    export const { setFilesList , changeCurrentPage , setOpenDetailId , setSavedIndex, setItemsPerPage , changeIsText , setLoading } = archiveSlice.actions;
     export default archiveSlice.reducer;

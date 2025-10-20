@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const location = useLocation();
-  console.log(location.pathname)
+  // console.log(location.pathname)
   return (
     <div className="w-40 bg-gradient-to-b text-white from-[#00B5A0] to-[#00C69B] rounded-l-xl">
       <div className="flex h-fit py-12 justify-center">
