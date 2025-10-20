@@ -103,7 +103,7 @@ const LinkTab = () => {
                   e.preventDefault();
                   dispatch(setResult(null));
                 }}
-                className="flex items-center bg-[#118AD3] px-3 py-1.5 rounded-full text-white"
+                className="flex items-center bg-[#118AD3] hover:bg-[#0973b5] duration-300 px-3 py-1.5 rounded-full text-white"
               >
                 <span className="px-2 mb-1">شروع دوباره</span>
                 <LuRefreshCw className="text-base" />
@@ -116,9 +116,15 @@ const LinkTab = () => {
               >
                 <LuCopy className="text-base text-[#626262]" />
               </p>
-              <p className="p-2 rounded-full  ml-4 hover:cursor-pointer transition-all duration-300 hover:bg-slate-200">
+              <a
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                href={url}
+                className="p-2 rounded-full  ml-4 hover:cursor-pointer transition-all duration-300 hover:bg-slate-200"
+              >
                 <LuDownload className="text-base text-[#626262] hover:cursor-pointer hover:bg-slate-200" />
-              </p>
+              </a>
             </div>
 
             <ul className="flex items-center">
